@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>人と箱の高さ比較</title>
+
+<style>
+body{
+    font-family:sans-serif;
+    background:#f5f5f5;
+    padding:30px;
+}
+
+.controls{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+input{
+    width:80px;
+    padding:5px;
+    font-size:16px;
+}
+
+button{
+    padding:8px 18px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+#scene{
+    display:flex;
+    align-items:flex-end;
+    gap:60px;
+
+    border:1px solid #ccc;
+    background:white;
+    padding:20px;
+    min-height:500px;
+}
+
+.item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.label{
+    margin-top:10px;
+    font-size:15px;
+}
+
+#humanSvg{
+    width:120px;
+}
+
+#box{
+    width:120px;
+    background:#4CAF50;
+    border:2px solid #2E7D32;
+    box-sizing:border-box;
+}
+</style>
+</head>
+
+<body>
+
+<h2>人と箱の高さ比較</h2>
+
+<div class="controls">
+
+<label>
+人の身長(cm)<br>
+<input id="humanHeight" type="number" value="170">
+</label>
+
+<label>
+箱の高さ(cm)<br>
+<input id="boxHeight" type="number" value="120">
+</label>
+
+<button onclick="draw()">表示更新</button>
+
+</div>
+
+<div id="scene">
+
+<div class="item">
+
+<svg id="humanSvg" viewBox="0 0 100 300">
+
+    <!-- 頭 -->
+    <circle cx="50" cy="30" r="18"
+            fill="#ffd6b3"
+            stroke="#333"
+            stroke-width="3"/>
+
+    <!-- 胴体 -->
+    <line x1="50" y1="48"
+          x2="50" y2="160"
+          stroke="#333"
+          stroke-width="8"/>
+
+    <!-- 腕 -->
+    <line x1="20" y1="90"
+          x2="80" y2="90"
+          stroke="#333"
+          stroke-width="8"/>
+
+    <!-- 左脚 -->
+    <line x1="50" y1="160"
+          x2="25" y2="280"
+          stroke="#333"
+          stroke-width="8"/>
+
+    <!-- 右脚 -->
+    <line x1="50" y1="160"
+          x2="75" y2="280"
+          stroke="#333"
+          stroke-width="8"/>
+
+</svg>
+
+<div class="label" id="humanLabel"></div>
+
+</div>
+
+<div class="item">
+
+<div id="box"></div>
+
+<div class="label" id="boxLabel"></div>
+
+</div>
+
+</div>
+
+<script>
+
+function draw(){
+
+    const humanHeight =
+        Number(document.getElementById("humanHeight").value);
+
+    const boxHeight =
+        Number(document.getElementById("boxHeight").value);
+
+    // 人の高さを画面上では420pxで固定表示
+    const humanPixelHeight = 420;
+
+    const scale =
+        humanPixelHeight / humanHeight;
+
+    document.getElementById("humanSvg").style.height =
+        humanPixelHeight + "px";
+
+    document.getElementById("box").style.height =
+        (boxHeight * scale) + "px";
+
+    document.getElementById("humanLabel").innerHTML =
+        "人 " + humanHeight + " cm";
+
+    document.getElementById("boxLabel").innerHTML =
+        "箱 " + boxHeight + " cm";
+
+}
+
+draw();
+
+</script>
+
+</body>
+</html>
