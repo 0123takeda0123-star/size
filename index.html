@@ -184,7 +184,8 @@ function draw(){
 
     // ラベル
     label.style.left = boxLeft + "px";
-    label.style.bottom = (boxBottom - 22) + "px";
+    label.style.bottom =
+    (boxBottom + box.offsetHeight + 5) + "px";
     label.style.width = box.offsetWidth + "px";
 
     document.getElementById("humanLabel").textContent =
@@ -237,13 +238,25 @@ document.addEventListener("mousemove",(e)=>{
     box.style.bottom = boxBottom + "px";
 
     label.style.left = boxLeft + "px";
-    label.style.bottom = (boxBottom - 22) + "px";
+    label.style.bottom =
+    (boxBottom + box.offsetHeight + 5) + "px";
 
 });
 
 document.addEventListener("mouseup",()=>{
 
     dragging = false;
+
+});
+
+box.addEventListener("dblclick", () => {
+
+    boxBottom = 23;
+
+    box.style.bottom = boxBottom + "px";
+
+   label.style.bottom =
+    (boxBottom + box.offsetHeight + 5) + "px";
 
 });
 </script>
