@@ -44,18 +44,13 @@ button{
 
 #scene{
     position:relative;
-    display:flex;
-    align-items:flex-end;
-    gap:60px;
-
     width:100%;
     min-height:520px;
-
     padding:20px;
     box-sizing:border-box;
-
     border:1px solid #ccc;
     background:#fff;
+    overflow:hidden;
 }
 
 /* 床 */
@@ -64,19 +59,17 @@ button{
     left:20px;
     right:20px;
     bottom:20px;
-
     height:3px;
     background:#444;
 }
 
-.item{
-    position:relative;
+/* 人 */
+#person{
+    position:absolute;
+    left:40px;
+    bottom:23px;
     z-index:2;
-
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-end;
+    text-align:center;
 }
 
 #personImage{
@@ -84,16 +77,30 @@ button{
     width:auto;
 }
 
+#humanLabel{
+    margin-top:8px;
+    text-align:center;
+}
+
+/* 箱 */
 #box{
+    position:absolute;
+    left:260px;
+    bottom:23px;
+
     background:#4CAF50;
     border:2px solid #2E7D32;
     box-sizing:border-box;
+
+    cursor:move;
+    user-select:none;
+    z-index:5;
 }
 
-.label{
-    margin-top:10px;
+#boxLabel{
+    position:absolute;
     text-align:center;
-    font-size:15px;
+    font-size:14px;
 }
 </style>
 </head>
@@ -125,30 +132,30 @@ button{
 
 <div id="scene">
 
-<div class="item">
-
-<img
-    id="personImage"
-    src="person.png"
-    alt="person">
-
-<div class="label" id="humanLabel"></div>
-
+<div id="person">
+    <img id="personImage" src="person.png" alt="person">
+    <div id="humanLabel"></div>
 </div>
-
-<div class="item">
 
 <div id="box"></div>
-
-<div class="label" id="boxLabel"></div>
-
-</div>
+<div id="boxLabel"></div>
 
 <div id="floor"></div>
 
 </div>
 
 <script>
+
+// 人画像の表示高さ(px)
+const PERSON_PIXEL_HEIGHT = 420;
+
+// 箱の現在位置
+let boxLeft = 260;
+let boxBottom = 23;
+
+const person = document.getElementById("personImage");
+const box = document.getElementById("box");
+const label = document.getElementById("boxLabel");
 
 function draw(){
 
@@ -161,42 +168,83 @@ function draw(){
     const boxWidth =
         Number(document.getElementById("boxWidth").value);
 
-    // 人画像の高さ(px)を固定
-    const personPixelHeight = 420;
+    const pxPerCm = PERSON_PIXEL_HEIGHT / humanHeight;
 
-    // 1cmあたり何pxか
-    const pxPerCm = personPixelHeight / humanHeight;
+    // 人
+    person.style.height = PERSON_PIXEL_HEIGHT + "px";
 
-    // 人画像
-    const person =
-        document.getElementById("personImage");
+    // 箱サイズ
+    box.style.width = (boxWidth * pxPerCm) + "px";
+    box.style.height = (boxHeight * pxPerCm) + "px";
 
-    person.style.height =
-        personPixelHeight + "px";
-
-    person.style.width = "auto";
-
-    // 箱
-    const box =
-        document.getElementById("box");
-
-    box.style.height =
-        (boxHeight * pxPerCm) + "px";
-
-    box.style.width =
-        (boxWidth * pxPerCm) + "px";
+    // 箱位置（変更しない）
+    box.style.left = boxLeft + "px";
+    box.style.bottom = boxBottom + "px";
 
     // ラベル
+    label.style.left = boxLeft + "px";
+    label.style.bottom = (boxBottom - 22) + "px";
+    label.style.width = box.offsetWidth + "px";
+
     document.getElementById("humanLabel").textContent =
         `人：${humanHeight} cm`;
 
-    document.getElementById("boxLabel").textContent =
-        `箱：${boxWidth} × ${boxHeight} cm`;
-
+    label.textContent =
+        `${boxWidth} × ${boxHeight} cm`;
 }
 
 draw();
 
+
+// ------------------------
+// ドラッグ
+// ------------------------
+
+let dragging = false;
+
+let startMouseX;
+let startMouseY;
+
+let startLeft;
+let startBottom;
+
+box.addEventListener("mousedown",(e)=>{
+
+    dragging = true;
+
+    startMouseX = e.clientX;
+    startMouseY = e.clientY;
+
+    startLeft = boxLeft;
+    startBottom = boxBottom;
+
+    e.preventDefault();
+
+});
+
+document.addEventListener("mousemove",(e)=>{
+
+    if(!dragging) return;
+
+    const dx = e.clientX - startMouseX;
+    const dy = e.clientY - startMouseY;
+
+    boxLeft = startLeft + dx;
+    boxBottom = startBottom - dy;
+
+    box.style.left = boxLeft + "px";
+    box.style.bottom = boxBottom + "px";
+
+    label.style.left = boxLeft + "px";
+    label.style.bottom = (boxBottom - 22) + "px";
+
+});
+
+document.addEventListener("mouseup",()=>{
+
+    dragging = false;
+
+});
 </script>
 
 </body>
