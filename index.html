@@ -101,6 +101,10 @@ button{
     text-align:center;
     font-size:14px;
 }
+
+#box{
+    touch-action:none;
+}
 </style>
 </head>
 
@@ -210,7 +214,7 @@ let startMouseY;
 let startLeft;
 let startBottom;
 
-box.addEventListener("mousedown",(e)=>{
+box.addEventListener("pointerdown", (e) => {
 
     dragging = true;
 
@@ -220,13 +224,17 @@ box.addEventListener("mousedown",(e)=>{
     startLeft = boxLeft;
     startBottom = boxBottom;
 
+    // ブラウザ側のスクロール・ジェスチャーを抑制
     e.preventDefault();
+
+    // ポインターをboxに固定
+    box.setPointerCapture(e.pointerId);
 
 });
 
-document.addEventListener("mousemove",(e)=>{
+box.addEventListener("pointermove", (e) => {
 
-    if(!dragging) return;
+    if (!dragging) return;
 
     const dx = e.clientX - startMouseX;
     const dy = e.clientY - startMouseY;
@@ -239,7 +247,34 @@ document.addEventListener("mousemove",(e)=>{
 
     label.style.left = boxLeft + "px";
     label.style.bottom =
-    (boxBottom + box.offsetHeight + 5) + "px";
+        (boxBottom + box.offsetHeight + 5) + "px";
+
+});
+
+box.addEventListener("pointerup", (e) => {
+
+    dragging = false;
+
+    box.releasePointerCapture(e.pointerId);
+
+});
+
+box.addEventListener("pointercancel", () => {
+
+    dragging = false;
+
+});
+
+
+// ダブルクリックで床に戻す
+box.addEventListener("dblclick", () => {
+
+    boxBottom = 23;
+
+    box.style.bottom = boxBottom + "px";
+
+    label.style.bottom =
+        (boxBottom + box.offsetHeight + 5) + "px";
 
 });
 
