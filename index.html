@@ -203,7 +203,7 @@ draw();
 
 
 // ------------------------
-// ドラッグ・ダブルタップ
+// ドラッグ
 // ------------------------
 
 let dragging = false;
@@ -214,31 +214,9 @@ let startMouseY;
 let startLeft;
 let startBottom;
 
-// ダブルタップ判定用
-let lastTapTime = 0;
-
 
 // ドラッグ開始
 box.addEventListener("pointerdown", (e) => {
-
-    const now = Date.now();
-
-    // 300ms以内にもう一度タップされたらダブルタップ
-    if (now - lastTapTime < 300) {
-
-        boxBottom = 23;
-
-        box.style.bottom = boxBottom + "px";
-
-        label.style.bottom =
-            (boxBottom + box.offsetHeight + 5) + "px";
-
-        lastTapTime = 0;
-
-        return;
-    }
-
-    lastTapTime = now;
 
     dragging = true;
 
@@ -283,27 +261,22 @@ box.addEventListener("pointerup", (e) => {
 
     dragging = false;
 
-    if (box.hasPointerCapture(e.pointerId)) {
-        box.releasePointerCapture(e.pointerId);
-    }
+    box.releasePointerCapture(e.pointerId);
 
 });
 
 
-// 操作キャンセル
-box.addEventListener("pointercancel", (e) => {
+// 指を離すなどして操作がキャンセルされた場合
+box.addEventListener("pointercancel", () => {
 
     dragging = false;
 
-    if (box.hasPointerCapture(e.pointerId)) {
-        box.releasePointerCapture(e.pointerId);
-    }
-
 });
+
 
 // ------------------------
 // ダブルクリックで床に戻す
-
+// ------------------------
 
 box.addEventListener("dblclick", () => {
 
@@ -315,8 +288,6 @@ box.addEventListener("dblclick", () => {
         (boxBottom + box.offsetHeight + 5) + "px";
 
 });
-
-// ------------------------
 </script>
 
 </body>
